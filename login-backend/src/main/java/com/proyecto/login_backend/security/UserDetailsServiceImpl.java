@@ -1,0 +1,30 @@
+package com.proyecto.login_backend.security;
+
+import com.proyecto.login_backend.model.Usuario;
+import com.proyecto.login_backend.repository.UsuarioRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Buscamos el usuario en la base de datos
+        Usuario usuario = usuarioRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+
+        // Lo traducimos al formato que Spring Security entiende
+        return org.springframework.security.core.userdetails.User
+                .withUsername(usuario.getUsername())
+                .password(usuario.getPassword())
+                .roles("USER")
+                .build();
+    }
+}
