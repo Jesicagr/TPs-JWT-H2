@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { JwtResponseDTO } from '../../data/dtos/auth.dto';
+import { SesionUsuario } from '../../domain/models/auth.model';
+import { AuthAdapter } from '../../data/adapters/auth.adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -9,31 +13,28 @@ import { Router } from '@angular/router';
 export class AuthService {
   private apiUrl = 'http://localhost:8080/auth/login';
 
-  // Ahora el servicio también inyecta el Router para poder redirigir
   constructor(private http: HttpClient, private router: Router) { }
 
-  // 1. El puente hacia el backend
-  login(username: string, password: string): Observable<any> {
+  login(username: string, password: string): Observable<SesionUsuario> {
     const body = { username, password };
-    return this.http.post(this.apiUrl, body);
+    
+    return this.http.post<JwtResponseDTO>(this.apiUrl, body).pipe(
+      map(respuestaCruda => AuthAdapter.fromJson(respuestaCruda))
+    );
   }
 
-  // 2. Guarda el token (persistencia)
   saveToken(token: string): void {
     localStorage.setItem('token', token);
   }
 
-  // 3. Recupera el token
   getToken(): string | null {
     return localStorage.getItem('token');
   }
 
-  // 4. Verifica si hay alguien logueado (devuelve true o false)
   isLoggedIn(): boolean {
     return !!this.getToken(); 
   }
 
-  // 5. El botón de pánico que limpia todo
   logout(): void {
     localStorage.removeItem('token');
     this.router.navigate(['/login']);
