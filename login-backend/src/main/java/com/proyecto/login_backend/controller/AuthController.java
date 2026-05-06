@@ -2,7 +2,7 @@ package com.proyecto.login_backend.controller;
 
 import com.proyecto.login_backend.model.LoginRequest;
 import com.proyecto.login_backend.model.JwtResponse;
-import com.proyecto.login_backend.security.JwtUtil; // Asume que pondrás tu JwtUtil en la carpeta security
+import com.proyecto.login_backend.security.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin // Fundamental para que el frontend no sea bloqueado
+@CrossOrigin // Para que no bloquee el frontend
 public class AuthController {
 
     @Autowired

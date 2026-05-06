@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-home',
@@ -10,8 +10,7 @@ import { AuthService } from '../auth.service';
 })
 export class HomeComponent {
 
-  // Inyectamos el servicio para poder usar su función de salir
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   cerrarSesion() {
     this.authService.logout();

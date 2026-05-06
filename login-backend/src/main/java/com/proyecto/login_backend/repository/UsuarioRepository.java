@@ -7,6 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    // Método para buscar un usuario en la base de datos H2.
     Optional<Usuario> findByUsername(String username);
 }
