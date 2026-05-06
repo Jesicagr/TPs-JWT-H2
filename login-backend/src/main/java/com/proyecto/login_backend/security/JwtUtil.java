@@ -9,10 +9,10 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    // Clave secreta para firmar el token (no la compartas)
-    private String secretKey = "ClaveSecretaParaElProyectoDeMetodologia2026";
+    // Clave secreta para firmar el token
+    private String secretKey = "ClaveSecretaParaElProyecto2026";
 
-    // Tiempo de validez (1 hora = 3600000 milisegundos)
+    // Tiempo de validez
     private long validityInMilliseconds = 3600000;
 
     // Método para crear el token
@@ -21,14 +21,14 @@ public class JwtUtil {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()
-                .setSubject(username) // Guarda el nombre de usuario
-                .setIssuedAt(now)     // Fecha de creación
-                .setExpiration(validity) // Fecha de vencimiento
-                .signWith(SignatureAlgorithm.HS256, secretKey) // Firma
-                .compact(); // Convierte a String
+                .setSubject(username) 
+                .setIssuedAt(now) 
+                .setExpiration(validity) 
+                .signWith(SignatureAlgorithm.HS256, secretKey) 
+                .compact(); 
     }
 
-    // Método para extraer el usuario del token
+    // Método para extraer el nombre de usuario del token
     public String getUsernameFromToken(String token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
