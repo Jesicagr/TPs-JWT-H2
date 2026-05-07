@@ -1,0 +1,29 @@
+<div class="catalogo-container" style="max-width: 800px; margin: 40px auto; padding: 20px; color: white;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+      <h2>🛒 Catálogo de Productos</h2>
+      <div style="background: #6366f1; padding: 10px 20px; border-radius: 8px;">
+        Items en Carrito: <b>{{ cartService.cartItems().length }}</b> | 
+        Total: <b>${{ cartService.totalCarrito() }}</b>
+      </div>
+    </div>
+  
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+      <div *ngFor="let p of stockService.products()" 
+           style="background: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #333; transition: 0.3s;">
+        <h3 style="margin-top: 0;">{{ p.name }}</h3>
+        <p style="color: #a0a0a0;">Precio: ${{ p.price }}</p>
+        
+        <p [style.color]="p.stock > 0 ? '#10b981' : '#ef4444'" style="font-weight: bold;">
+          Stock disponible: {{ p.stock }}
+        </p>
+  
+        <button (click)="comprar(p)" 
+                [disabled]="p.stock <= 0"
+                style="width: 100%; padding: 10px; border-radius: 6px; border: none; cursor: pointer; font-weight: bold;"
+                [style.background]="p.stock > 0 ? '#6366f1' : '#3f3f46'"
+                [style.color]="p.stock > 0 ? 'white' : '#71717a'">
+          {{ p.stock > 0 ? 'Agregar al Carrito' : 'Agotado' }}
+        </button>
+      </div>
+    </div>
+  </div>
