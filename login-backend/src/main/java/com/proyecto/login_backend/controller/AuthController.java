@@ -22,6 +22,14 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @Autowired private com.proyecto.login_backend.repository.UsuarioRepository usuarioRepository;
+
+
+    @GetMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String username) {
+        return ResponseEntity.ok(usuarioRepository.existsByUsername(username));
+    }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
