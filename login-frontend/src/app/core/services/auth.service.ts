@@ -32,11 +32,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken(); 
+    return !!localStorage.getItem('token');
   }
-
-  logout(): void {
+  
+  logout() {
     localStorage.removeItem('token');
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 }

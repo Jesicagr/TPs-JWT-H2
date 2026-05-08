@@ -1,1 +1,15 @@
-<router-outlet></router-outlet>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/home">App</a>
+      <div class="navbar-nav">
+        <a class="nav-link" routerLink="/home">Inicio</a>
+        <a class="nav-link" routerLink="/catalogo">Catálogo</a>
+      </div>
+      <div class="navbar-nav ms-auto">
+        <a class="btn btn-outline-light" routerLink="/login" *ngIf="!isLoggedIn()">Iniciar Sesión</a>
+        <button class="btn btn-outline-danger" (click)="logout()" *ngIf="isLoggedIn()">Cerrar Sesión</button>
+      </div>
+    </div>
+  </nav>
+  
+  <router-outlet></router-outlet>
