@@ -10,11 +10,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import com.proyecto.login_backend.repository.UsuarioRepository;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin // Para que no bloquee el frontend
+@CrossOrigin(origins = "*") // Para que no bloquee el front
 public class AuthController {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
     @Autowired
     private AuthenticationManager authManager;
@@ -38,5 +42,11 @@ public class AuthController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body("Credenciales inválidas");
         }
+    }
+    @GetMapping("/check-username")
+    public ResponseEntity<Boolean> checkUsername(@RequestParam String username) {
+        // existsByUsername es más eficiente que findBy... para esto
+        boolean exists = usuarioRepository.findByUsername(username).isPresent();
+        return ResponseEntity.ok(exists);
     }
 }
