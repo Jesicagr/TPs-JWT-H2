@@ -1,0 +1,19 @@
+<div class="container mt-4">
+    <div class="alert alert-success" *ngIf="wsService.lastMessage">
+      {{ wsService.lastMessage }}
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4" *ngFor="let p of productos()">
+        <div class="card mb-4 bg-dark text-white">
+          <div class="card-body">
+            <h5 class="card-title">{{ p.name }}</h5>
+            <p>Precio: ${{ p.price }}</p>
+            <button (click)="comprar(p)" class="btn btn-light w-100">
+              Agregar al Carrito
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
