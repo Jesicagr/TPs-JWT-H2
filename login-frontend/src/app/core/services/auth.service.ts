@@ -15,13 +15,12 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  login(username: string, password: string): Observable<SesionUsuario> {
-    const body = { username, password };
-    
-    return this.http.post<JwtResponseDTO>(this.apiUrl, body).pipe(
-      map(respuestaCruda => AuthAdapter.fromJson(respuestaCruda))
-    );
-  }
+login(credentials: any): Observable<any> {
+  return this.http.post<any>(`${this.apiUrl}/login`, {
+    username: credentials.username,
+    password: credentials.password
+  });
+}
 
   saveToken(token: string): void {
     localStorage.setItem('token', token);

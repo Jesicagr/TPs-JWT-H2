@@ -1,32 +1,39 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../core/services/auth.service';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, ReactiveFormsModule], 
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
-  username = '';
-  password = '';
+  private fb = inject(FormBuilder); 
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  constructor(private authService: AuthService, private router: Router) { }
+  public loginForm: FormGroup = this.fb.group({
+    username: ['', [Validators.required, Validators.minLength(3)]],
+    password: ['', [Validators.required, Validators.minLength(4)]]
+  });
 
-  onLogin() {
-    this.authService.login(this.username, this.password).subscribe({
-      next: (respuesta) => {
-        this.authService.saveToken(respuesta.tokenAcceso); 
+  public errorMessage: string | null = null;
+
+  // En login.component.ts
+onSubmit() {
+  if (this.loginForm.valid) {
+    this.authService.login(this.loginForm.value).subscribe({
+      next: (res: any) => {
         this.router.navigate(['/home']);
       },
-      
-      error: (error) => {
-        console.error('Error al iniciar sesión', error);
-        alert('Credenciales inválidas.');
+      error: (err: any) => {
+        this.errorMessage = "Credenciales incorrectas";
       }
     });
   }
+}
 }

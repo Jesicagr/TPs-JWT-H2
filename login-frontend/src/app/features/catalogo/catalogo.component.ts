@@ -18,12 +18,16 @@ export class CatalogoComponent {
   public wsService = inject(WebsocketService);
   private authService = inject(AuthService);
   private router = inject(Router); 
+  public mensajeNotificacion: string | null = null;
 
   productos = this.stockService.productos;
 
   comprar(producto: any) {
     this.cartService.agregarAlCarrito(producto);
-    
+    this.mensajeNotificacion = `¡${producto.name} añadido al carrito!`;
+  
+  setTimeout(() => { this.mensajeNotificacion = null; }, 3000);
+
     if (this.authService.isLoggedIn()) {
       this.wsService.sendMessage(`¡Nueva compra: ${producto.name}!`);
       alert('¡Mensaje enviado al backend!');
