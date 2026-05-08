@@ -10,42 +10,50 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.cors.CorsConfiguration;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Exponemos el AuthenticationManager para que el AuthController lo pueda usar
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
-    // Cómo se leen las contraseñas. (En un entorno real se usa BCrypt)
     @Bean
     public PasswordEncoder passwordEncoder() {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    // Reglas
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Desactiva CSRF porque usaremos JWT
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowedOrigins(List.of("http://localhost:4200"));
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("*"));
+                    config.setAllowCredentials(true);
+                    return config;
+                }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // Puerta ABIERTA para poder iniciar sesión
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/h2-console/**").permitAll() // Puerta ABIERTA para ver la base de datos.
-                        .anyRequest().authenticated() // Para cualquier otra puerta, EXIGIR TOKEN
+                        .requestMatchers("/h2-console/**").permitAll()
+                        .requestMatchers("/ws-backend/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); 
+                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
 
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
 
         return http.build();
     }
-    // Carga el usuario en la base de datos H2 al iniciar el servidor
+
     @Bean
     public org.springframework.boot.CommandLineRunner initData(com.proyecto.login_backend.repository.UsuarioRepository repository) {
         return args -> {
